@@ -52,9 +52,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResult<TokenResult> register(RegisterRequest request) {
-        if (!request.getIsAgreed()){
-            return CommonResult.fail("未同意相关协议无法注册");
-        }
         if (ObjectUtil.isEmpty(request) || request.getEmail() == null
                 || request.getCode() == null || request.getPassword() == null
                 || request.getName() == null || request.getWorkId() == null
@@ -92,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResult<BlankResult> reset(ResetRequest request) {
-        if (ObjectUtil.isEmpty(request)  || request.getEmail() == null  || request.getWorkId() == null
+        if (ObjectUtil.isEmpty(request)  || request.getEmail() == null
                 || request.getCode() == null || request.getPassword() == null) {
             return CommonResult.fail("密码重置信息不完整");
         }
