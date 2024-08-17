@@ -1,12 +1,12 @@
 package com.sipc.clockin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
+import com.sipc.clockin.enums.RoleEnum;
 import com.sipc.clockin.mapper.UserMapper;
 import com.sipc.clockin.pojo.domain.PO.User;
 import com.sipc.clockin.pojo.model.CommonResult;
-import com.sipc.clockin.pojo.model.enumeration.RedisFlags;
+import com.sipc.clockin.enums.RedisFlags;
 import com.sipc.clockin.pojo.model.request.EmailRequest;
 import com.sipc.clockin.pojo.model.request.LoginRequest;
 import com.sipc.clockin.pojo.model.request.RegisterRequest;
@@ -52,9 +52,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResult<TokenResult> register(RegisterRequest request) {
-        if (!request.getIsAgreed()){
-            return CommonResult.fail("未同意相关协议无法注册");
-        }
         if (ObjectUtil.isEmpty(request) || request.getEmail() == null
                 || request.getCode() == null || request.getPassword() == null
                 || request.getName() == null || request.getWorkId() == null
@@ -73,6 +70,10 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             BeanUtil.copyProperties(request, user);
             user.setCreateTime(new Date());
+            // 如果学号不以 20 开头，则为辅导员
+            if (! user.getWorkId().toString().startsWith("20")){
+                user.setRole(RoleEnum.MANAGER);
+            }
             user.setPassword(MD5Utils.encrypt(request.getPassword()));
             if (userMapper.insert(user) == 0){
                 return CommonResult.fail("注册失败");
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
                 result.setToken(JwtUtils.sign(user));
                 return CommonResult.success("注册成功",result);
             }
-            return CommonResult.success("注册成功");
+            return CommonResult.fail("注册失败");
         } catch (DataAccessException e) {
             e.printStackTrace();
             return CommonResult.fail("注册失败，数据库操作异常");
@@ -92,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResult<BlankResult> reset(ResetRequest request) {
-        if (ObjectUtil.isEmpty(request)  || request.getEmail() == null  || request.getWorkId() == null
+        if (ObjectUtil.isEmpty(request)  || request.getEmail() == null
                 || request.getCode() == null || request.getPassword() == null) {
             return CommonResult.fail("密码重置信息不完整");
         }

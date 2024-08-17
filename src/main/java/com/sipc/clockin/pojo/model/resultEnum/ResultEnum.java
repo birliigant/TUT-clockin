@@ -1,4 +1,4 @@
-package com.sipc.clockin.pojo.domain.enumeration;
+package com.sipc.clockin.pojo.model.resultEnum;
 
 import lombok.Getter;
 

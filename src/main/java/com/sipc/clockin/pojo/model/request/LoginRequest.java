@@ -10,6 +10,4 @@ public class LoginRequest {
     private String password;
     @JsonProperty("is_remembered")
     private Boolean isRemembered;
-    @JsonProperty("is_agreed")
-    private Boolean isAgreed;
 }

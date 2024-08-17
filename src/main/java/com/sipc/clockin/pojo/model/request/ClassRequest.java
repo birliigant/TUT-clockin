@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class ResetRequest {
-    private String email;
-    private String code;
-    private String password;
+public class ClassRequest {
+    @JsonProperty("class_ids")
+    private int[] classIds;
 }

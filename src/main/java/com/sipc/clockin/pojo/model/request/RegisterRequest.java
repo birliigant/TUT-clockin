@@ -13,6 +13,4 @@ public class RegisterRequest {
     private String code;
     @JsonProperty("is_remembered")
     private Boolean isRemembered;
-    @JsonProperty("is_agreed")
-    private Boolean isAgreed;
 }
