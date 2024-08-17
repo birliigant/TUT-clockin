@@ -3,16 +3,18 @@ package com.sipc.clockin.pojo.domain.PO;
 import cn.hutool.core.date.DateTime;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class Clock{
     private Integer id;
-    private Integer message_id;
-    private Integer student_id;
-    private Integer class_id;
+    private Integer messageId;
+    private Integer studentId;
+    private Integer classId;
     private String type;
-    private Integer is_pass;
-    private DateTime time;
-    private Integer is_read;
-    private Integer is_agreed;
+    private Integer isPass;
+    private Date time;
+    private Integer isRead;
+    private Integer isAgreed;
     private String reason;
 }
