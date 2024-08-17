@@ -14,4 +14,29 @@
         UPDATE user SET password = #{password}
         WHERE email = #{email}
     </update>
+
+    <update id="updateTeacherInfo">
+        UPDATE user SET college_id = #{collegeId}, icon = #{icon}
+        WHERE work_id = #{workId}
+    </update>
+
+    <update id="updateClassIds">
+        UPDATE user set class_ids = #{classIds}
+        WHERE work_id = #{workId}
+    </update>
+
+    <update id="updateRole">
+        UPDATE user set role = #{role} WHERE work_id IN
+        <foreach collection="studentIds" item="id" index="index" open="(" close=")" separator=",">
+           #{id}
+        </foreach>
+    </update>
+
+    <select id="selectManager" resultType="com.sipc.clockin.pojo.domain.PO.User">
+        SELECT * FROM user WHERE role = '学生管理员' AND class_id = #{classId}
+    </select>
+
+    <select id="selectStudent" resultType="com.sipc.clockin.pojo.domain.DO.UserSimple">
+        SELECT work_id, name FROM user WHERE role = '学生管理员' AND class_id = #{classId}
+    </select>
 </mapper>

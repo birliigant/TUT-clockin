@@ -2,6 +2,7 @@ package com.sipc.clockin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.sipc.clockin.enums.RoleEnum;
 import com.sipc.clockin.mapper.UserMapper;
 import com.sipc.clockin.pojo.domain.PO.User;
 import com.sipc.clockin.pojo.model.CommonResult;
@@ -69,6 +70,10 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             BeanUtil.copyProperties(request, user);
             user.setCreateTime(new Date());
+            // 如果学号不以 20 开头，则为辅导员
+            if (! user.getWorkId().toString().startsWith("20")){
+                user.setRole(RoleEnum.MANAGER);
+            }
             user.setPassword(MD5Utils.encrypt(request.getPassword()));
             if (userMapper.insert(user) == 0){
                 return CommonResult.fail("注册失败");

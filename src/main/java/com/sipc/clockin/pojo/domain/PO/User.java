@@ -17,7 +17,7 @@ public class User{
     private Integer grade;
     private String dormitory;
     private String icon;
-    private Integer role;
+    private String role;
     private String classIds;
     private Date createTime;
 }
