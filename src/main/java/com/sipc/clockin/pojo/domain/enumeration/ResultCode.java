@@ -1,4 +1,4 @@
-package com.sipc.clockin.pojo.model.enumeration;
+package com.sipc.clockin.pojo.domain.enumeration;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
