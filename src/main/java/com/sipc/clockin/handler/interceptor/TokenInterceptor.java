@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sipc.clockin.handler.token.TokenHandler;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.TokenModel;
-import com.sipc.clockin.pojo.model.enumeration.RedisFlags;
+import com.sipc.clockin.pojo.domain.enumeration.RedisFlags;
 import com.sipc.clockin.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
