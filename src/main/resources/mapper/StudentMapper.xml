@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sipc.clockin.mapper.StudentMapper">
+    <insert id="addClock">
+        insert into clock (message_id, student_id, class_id, type,time,reason)
+            VALUE (#{},#{studentId},#{},#{type},#{time},#{reason})
+    </insert>
+    <insert id="addMessage">
+#         insert into message (location, create_time, start_time, end_time, is_deleted) VALUE
+    </insert>
+
+    <select id="getClockInformation" resultType="com.sipc.clockin.pojo.model.result.HomePageResult">
+        SELECT * FROM user AS u
+            JOIN class AS c ON u.class_id = c.id #获取班级名
+            JOIN message_to_class m ON u.class_id = m.class_id #获取班级对应的messageId
+            JOIN message ON message.id = m.message_id #获取对应message的start和endTime
+                where u.id = #{id}
+    </select>
+    <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">
+        SELECT * FROM user
+            JOIN clock ON student_id = user.id #获取打卡情况
+                WHERE user.class_id = #{classId}
+    </select>
+    <select id="getClockRecord" resultType="com.sipc.clockin.pojo.domain.PO.Clock">
+        select * from clock where student_id = #{id}
+    </select>
+</mapper>
