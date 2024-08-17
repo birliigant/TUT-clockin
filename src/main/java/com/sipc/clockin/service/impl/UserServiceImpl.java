@@ -1,12 +1,11 @@
 package com.sipc.clockin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.sipc.clockin.mapper.UserMapper;
 import com.sipc.clockin.pojo.domain.PO.User;
 import com.sipc.clockin.pojo.model.CommonResult;
-import com.sipc.clockin.pojo.model.enumeration.RedisFlags;
+import com.sipc.clockin.enums.RedisFlags;
 import com.sipc.clockin.pojo.model.request.EmailRequest;
 import com.sipc.clockin.pojo.model.request.LoginRequest;
 import com.sipc.clockin.pojo.model.request.RegisterRequest;
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
                 result.setToken(JwtUtils.sign(user));
                 return CommonResult.success("注册成功",result);
             }
-            return CommonResult.success("注册成功");
+            return CommonResult.fail("注册失败");
         } catch (DataAccessException e) {
             e.printStackTrace();
             return CommonResult.fail("注册失败，数据库操作异常");

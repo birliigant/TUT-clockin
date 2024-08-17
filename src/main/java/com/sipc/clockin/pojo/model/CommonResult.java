@@ -1,7 +1,7 @@
 package com.sipc.clockin.pojo.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sipc.clockin.pojo.model.enumeration.ResultEnum;
+import com.sipc.clockin.pojo.model.resultEnum.ResultEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

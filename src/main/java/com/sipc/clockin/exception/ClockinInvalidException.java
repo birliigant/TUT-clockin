@@ -1,6 +1,6 @@
 package com.sipc.clockin.exception;
 
-import com.sipc.clockin.pojo.model.enumeration.ResultCode;
+import com.sipc.clockin.pojo.model.resultEnum.ResultCode;
 import lombok.Getter;
 
 /**
