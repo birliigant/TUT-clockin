@@ -3,7 +3,7 @@
 <mapper namespace="com.sipc.clockin.mapper.StudentMapper">
     <insert id="addClock">
         insert into clock (message_id, student_id, class_id, type,time,reason)
-            VALUE (#{},#{studentId},#{},#{type},#{time},#{reason})
+            VALUE (#{messageId},#{studentId},#{classId},#{type},#{time},#{reason})
     </insert>
     <insert id="addMessage">
 #         insert into message (location, create_time, start_time, end_time, is_deleted) VALUE
@@ -14,12 +14,13 @@
             JOIN class AS c ON u.class_id = c.id #获取班级名
             JOIN message_to_class m ON u.class_id = m.class_id #获取班级对应的messageId
             JOIN message ON message.id = m.message_id #获取对应message的start和endTime
-                where u.id = #{id}
+                where u.id = #{id} and curdate(message.create_time) = #{date}
     </select>
     <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">
         SELECT * FROM user
             JOIN clock ON student_id = user.id #获取打卡情况
-                WHERE user.class_id = #{classId}
+            JOIN message ON message_id = message.id #获取打卡消息
+                WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}
     </select>
     <select id="getClockRecord" resultType="com.sipc.clockin.pojo.domain.PO.Clock">
         select * from clock where student_id = #{id}

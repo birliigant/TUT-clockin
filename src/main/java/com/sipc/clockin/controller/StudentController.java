@@ -1,5 +1,6 @@
 package com.sipc.clockin.controller;
 
+import cn.hutool.core.date.DateTime;
 import com.sipc.clockin.pojo.domain.PO.Clock;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.request.ClockRequest;
@@ -20,8 +21,8 @@ import java.util.List;
 public class StudentController {
     private final StudentService studentService;
     @GetMapping("/home")
-    private CommonResult<HomePageResult> getHomePage(){
-        return studentService.getHomePage();
+    private CommonResult<HomePageResult> getHomePage(DateTime date){
+        return studentService.getHomePage(date);
     }
     @GetMapping("/record")
     private CommonResult<List<Clock>> getClockRecord(){

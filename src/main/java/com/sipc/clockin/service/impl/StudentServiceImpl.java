@@ -1,5 +1,6 @@
 package com.sipc.clockin.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import com.sipc.clockin.handler.token.TokenHandler;
 import com.sipc.clockin.mapper.StudentMapper;
 import com.sipc.clockin.pojo.domain.PO.Clock;
@@ -19,11 +20,11 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     @Override
-    public CommonResult<HomePageResult> getHomePage() {
+    public CommonResult<HomePageResult> getHomePage(DateTime date) {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
-        HomePageResult homePageResult = studentMapper.getClockInformation(id);
+        HomePageResult homePageResult = studentMapper.getClockInformation(id,date);
         Integer classId = homePageResult.getClassId();
-        List<HomeClassResult> classInformation = studentMapper.getClassInformation(classId);
+        List<HomeClassResult> classInformation = studentMapper.getClassInformation(classId,date);
         homePageResult.setHomeClassResults(classInformation);
         return CommonResult.success(homePageResult);
     }
@@ -38,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public CommonResult<BlankResult> clockIn(ClockRequest request) {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
-        HomePageResult clockInformation = studentMapper.getClockInformation(id);
+        HomePageResult clockInformation = studentMapper.getClockInformation(id,request.getTime());
         studentMapper.addClock(request,clockInformation.getClassId(),clockInformation.getMessageId());
         return CommonResult.success();
     }
