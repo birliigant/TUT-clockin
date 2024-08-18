@@ -1,6 +1,7 @@
-package com.sipc.clockin.pojo.domain.enumeration;
+package com.sipc.clockin.pojo.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sipc.clockin.pojo.model.resultEnum.ResultCode;
 import lombok.Data;
 
 import java.io.Serializable;
