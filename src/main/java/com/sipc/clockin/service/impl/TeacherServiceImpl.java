@@ -130,11 +130,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public CommonResult<List<UserSimple>> selectStudents(SelectStudentRequest request) {
-        if (ObjectUtil.isEmpty(request.getClassId())){
+    public CommonResult<List<UserSimple>> selectStudents(int classId) {
+        if (ObjectUtil.isEmpty(classId)){
             return CommonResult.fail("请求错误");
         }
-        List<UserSimple> users = userMapper.selectStudent(request.getClassId());
+        List<UserSimple> users = userMapper.selectStudent(classId);
         if (ObjectUtil.isEmpty(users)){
             return CommonResult.fail("未查询到学生");
         }

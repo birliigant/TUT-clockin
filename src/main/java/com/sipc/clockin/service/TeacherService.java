@@ -18,6 +18,6 @@ public interface TeacherService {
     CommonResult<BlankResult> deleteClass(ClassRequest request);
     CommonResult<BlankResult> addManager(ManageRequest request);
     CommonResult<BlankResult> deleteManager(ManageRequest request);
-    CommonResult<List<UserSimple>> selectStudents(SelectStudentRequest request);
+    CommonResult<List<UserSimple>> selectStudents(int classId);
 
 }
