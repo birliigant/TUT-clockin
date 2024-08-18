@@ -14,7 +14,6 @@ import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.TokenModel;
 import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
-import com.sipc.clockin.pojo.model.request.SelectStudentRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.service.TeacherService;
