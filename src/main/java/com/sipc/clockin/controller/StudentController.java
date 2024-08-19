@@ -10,10 +10,7 @@ import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.StudentClockDetail;
 import com.sipc.clockin.service.StudentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,9 +40,8 @@ public class StudentController {
 
     //打卡
     @PostMapping("/clockin")
-    private CommonResult<BlankResult> clockIn(ClockRequest request) {
-        return studentServiceImpl.clockIn(request);
-    }
+    private CommonResult<BlankResult> clockIn(@RequestBody ClockRequest request){
+        return studentService.clockIn(request);
 
     //查看个人信息
     @GetMapping("/info")
