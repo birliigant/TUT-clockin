@@ -24,5 +24,5 @@ public interface TeacherService {
     CommonResult<List<UserSimple>> selectStudents(int classId);
     CommonResult<HomePageResult> getTeacherHomePage(String className);
     CommonResult<List<StudentClockDetail>> getTeacherRecord(Integer classId, DateTime date);
-    public CommonResult<RestResult> getRestInfo(Integer clockId);
+    CommonResult<RestResult> getRestInfo(Integer clockId);
 }
