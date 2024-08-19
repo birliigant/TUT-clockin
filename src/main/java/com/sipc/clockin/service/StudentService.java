@@ -1,6 +1,7 @@
 package com.sipc.clockin.service;
 
 import cn.hutool.core.date.DateTime;
+import com.sipc.clockin.pojo.domain.DO.UserInfo;
 import com.sipc.clockin.pojo.domain.PO.Clock;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.request.ClockRequest;
@@ -13,9 +14,17 @@ import java.util.List;
 
 public interface StudentService {
     CommonResult<HomePageResult> getHomePage();
+
     CommonResult<List<Clock>> getClockRecord();
+
     CommonResult<BlankResult> clockIn(ClockRequest request);
+
     CommonResult<List<StudentClockDetail>> getAdminRecord(DateTime date);
     CommonResult<HomePageResult> getTeacherHomePage(Integer classId);
     CommonResult<RestResult> getRestInfo(Integer classId);
+
+
+    //查询用户信息
+    CommonResult<UserInfo> getUserInfo();
+
 }

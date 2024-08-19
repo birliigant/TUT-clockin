@@ -27,4 +27,15 @@
         SELECT * from clock JOIN user ON student_id = user.work_id AND clock.id = #{clockId}
     </select>
 
+
+    <!--查询学生信息-->
+    <select id="getUserById" resultType="com.sipc.clockin.pojo.domain.DO.UserInfo">
+        select u.name,u.work_id as studentId,u.email,u.grade,u.dormitory,c.name as collegeName,cl.name as
+        className,m.name as majorName
+        from user u
+        inner join college c on u.college_id = c.id
+        inner join clazz cl on u.class_id = cl.id
+        inner join major m on u.major_id = m.id
+        where u.work_id = #{id}
+    </select>
 </mapper>

@@ -3,6 +3,7 @@ package com.sipc.clockin.service.impl;
 import cn.hutool.core.date.DateTime;
 import com.sipc.clockin.handler.token.TokenHandler;
 import com.sipc.clockin.mapper.StudentMapper;
+import com.sipc.clockin.pojo.domain.DO.UserInfo;
 import com.sipc.clockin.pojo.domain.PO.Clock;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.request.ClockRequest;
@@ -14,7 +15,7 @@ import com.sipc.clockin.service.StudentService;
 import com.sipc.clockin.utils.DateTimeParseUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.apache.el.parser.Token;
 import java.util.List;
 
 @Service
@@ -104,4 +105,13 @@ public class StudentServiceImpl implements StudentService {
         RestResult restInfo = studentMapper.getRestInfo(clockId);
         return CommonResult.success(restInfo);
     }
+
+    //查看学生信息
+    @Override
+    public CommonResult<UserInfo> getUserInfo() {
+        Integer studentId = TokenHandler.getTokenModelThreadLocal().getWorkId();
+        UserInfo userInfo = studentMapper.getUserById(studentId);
+        return CommonResult.success(userInfo);
+    }
+
 }
