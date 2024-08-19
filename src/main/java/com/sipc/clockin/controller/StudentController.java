@@ -64,6 +64,6 @@ public class StudentController {
     //TODO: 未修改头像
     @PostMapping("/info")
     private CommonResult<BlankResult> updateInfo(@RequestBody UpdateStudentRequest request) {
-        return studentServiceImpl.updateUserInfo(request);
+        return studentService.updateUserInfo(request);
     }
 }
