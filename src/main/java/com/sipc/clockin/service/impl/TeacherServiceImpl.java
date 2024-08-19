@@ -6,9 +6,11 @@ import cn.hutool.core.util.StrUtil;
 import com.sipc.clockin.enums.RoleEnum;
 import com.sipc.clockin.handler.interceptor.Role;
 import com.sipc.clockin.handler.token.TokenHandler;
+import com.sipc.clockin.mapper.ClazzMapper;
 import com.sipc.clockin.mapper.UserMapper;
 import com.sipc.clockin.pojo.domain.DO.TeacherInfo;
 import com.sipc.clockin.pojo.domain.DO.UserSimple;
+import com.sipc.clockin.pojo.domain.DO.Teacher;
 import com.sipc.clockin.pojo.domain.PO.User;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.TokenModel;
@@ -26,17 +28,27 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
+    private ClazzMapper clazzMapper;
     private UserMapper userMapper;
     @Role(identities = {RoleEnum.MANAGER})
     @Override
     public CommonResult<TeacherInfo> queryTeacherInfo() {
         TokenModel token = TokenHandler.getTokenModelThreadLocal();
-        User user = userMapper.selectByWorkId(token.getWorkId());
-        if (ObjectUtil.isEmpty(user)){
+        Teacher teacher = userMapper.selectTeacher(token.getWorkId());
+        if (ObjectUtil.isEmpty(teacher)){
             return CommonResult.fail("查询失败");
         }
         TeacherInfo teacherInfo = new TeacherInfo();
-        BeanUtil.copyProperties(user, teacherInfo);
+        BeanUtil.copyProperties(teacher, teacherInfo);
+        List<Integer> ids = new ArrayList<>();
+        for (String s : teacher.getClassIds().substring(1, teacher.getClassIds().length() - 1).split(",")) {
+            ids.add(Integer.valueOf(s));
+        }
+        if (ObjectUtil.isEmpty(ids)){
+            return CommonResult.fail("查询失败");
+        }
+        List<String> classNames = clazzMapper.selectNameByIds(ids);
+        teacherInfo.setClassNames(classNames);
         return CommonResult.success("查询成功", teacherInfo);
     }
 

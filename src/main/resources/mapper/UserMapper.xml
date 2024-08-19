@@ -6,6 +6,14 @@
         SELECT * FROM user WHERE email = #{email}
     </select>
 
+    <select id="selectTeacher" resultType="com.sipc.clockin.pojo.domain.DO.Teacher">
+        SELECT u.work_id as work_id, u.name as name, u.class_ids as class_ids,
+               u.email as email, c.name as college_name
+        FROM user u
+                LEFT JOIN college c on u.college_id = c.id
+        WHERE u.work_id = #{workId}
+    </select>
+
     <select id="selectByWorkId" resultType="com.sipc.clockin.pojo.domain.PO.User">
         SELECT * FROM user WHERE work_id = #{workId}
     </select>
