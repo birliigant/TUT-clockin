@@ -24,15 +24,15 @@ public class UserController {
         return userService.login(request);
     }
     @PostMapping("/reset")
-    private CommonResult<BlankResult> reset(ResetRequest request){
+    private CommonResult<BlankResult> reset(@RequestBody ResetRequest request){
         return userService.reset(request);
     }
     @PostMapping("/register")
-    private CommonResult<TokenResult> register(RegisterRequest request){
+    private CommonResult<TokenResult> register(@RequestBody RegisterRequest request){
         return userService.register(request);
     }
     @PostMapping("/code")
-    private CommonResult<BlankResult> code(EmailRequest request){
+    private CommonResult<BlankResult> code(@RequestBody EmailRequest request){
         return userService.verifyCode(request);
     }
 }

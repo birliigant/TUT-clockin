@@ -23,23 +23,23 @@ public class TeacherController {
         return teacherService.queryTeacherInfo();
     }
     @PutMapping("/update")
-    CommonResult<BlankResult> updateTeacherInfo(UpdateTeacherRequest request){
+    CommonResult<BlankResult> updateTeacherInfo(@RequestBody UpdateTeacherRequest request){
         return teacherService.updateTeacherInfo(request);
     }
     @PostMapping("/class/add")
-    CommonResult<BlankResult> addClass(ClassRequest request){
+    CommonResult<BlankResult> addClass(@RequestBody ClassRequest request){
         return teacherService.addClass(request);
     }
     @PostMapping("/class/delete")
-    CommonResult<BlankResult> deleteClass(ClassRequest request){
+    CommonResult<BlankResult> deleteClass(@RequestBody ClassRequest request){
         return teacherService.deleteClass(request);
     }
     @PostMapping("/manage/add")
-    CommonResult<BlankResult> addManager(ManageRequest request){
+    CommonResult<BlankResult> addManager(@RequestBody ManageRequest request){
         return teacherService.addManager(request);
     }
     @PostMapping("/manage/delete")
-    CommonResult<BlankResult> deleteManager(ManageRequest request){
+    CommonResult<BlankResult> deleteManager(@RequestBody ManageRequest request){
         return teacherService.deleteManager(request);
     }
     @GetMapping("/class")
