@@ -3,29 +3,40 @@
 <mapper namespace="com.sipc.clockin.mapper.StudentMapper">
     <update id="addClock">
         UPDATE clock SET type = #{type}, time = #{time}, reason = #{reason}
-                     WHERE message_id = #{messageId} AND clock.class_id = #{classId} AND student_id = #{studentId}
+        WHERE message_id = #{messageId} AND clock.class_id = #{classId} AND student_id = #{studentId}
     </update>
 
-<!--    <select id="getClockInformation" resultType="com.sipc.clockin.pojo.model.result.HomePageResult">-->
-<!--        SELECT * FROM user AS u-->
-<!--            JOIN class AS c ON u.class_id = c.id #获取班级信息-->
-<!--    </select>-->
-<!--    <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">-->
-<!--        SELECT * FROM class-->
-<!--            JOIN message_to_class AS m ON m.class_id = #{classId}-->
-<!--            JOIN message ON m.message_id = message.id AND curdate(message.create_time) = #{date}-->
-<!--#                 WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}-->
-<!--    </select>-->
+    <!--    <select id="getClockInformation" resultType="com.sipc.clockin.pojo.model.result.HomePageResult">-->
+    <!--        SELECT * FROM user AS u-->
+    <!--            JOIN class AS c ON u.class_id = c.id #获取班级信息-->
+    <!--    </select>-->
+    <!--    <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">-->
+    <!--        SELECT * FROM class-->
+    <!--            JOIN message_to_class AS m ON m.class_id = #{classId}-->
+    <!--            JOIN message ON m.message_id = message.id AND curdate(message.create_time) = #{date}-->
+    <!--#                 WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}-->
+    <!--    </select>-->
     <select id="getClockRecord" resultType="com.sipc.clockin.pojo.domain.PO.Clock">
         select * from clock where student_id = #{id}
     </select>
     <select id="getClassClock" resultType="com.sipc.clockin.pojo.model.result.StudentClockDetail">
         select * from user JOIN class ON user.class_id = class.id
-                                AND user.class_id = (SELECT class_id from user where work_id = #{workId})
-                           JOIN message_to_class ON class.id = message_to_class.class_id
-                           JOIN message ON message_to_class.message_id = message.id
-                                AND DATE (message.create_time) = #{date}
-                           JOIN clock ON message.id = clock.message_id
-                                And student_id= user.work_id
+        AND user.class_id = (SELECT class_id from user where work_id = #{workId})
+        JOIN message_to_class ON class.id = message_to_class.class_id
+        JOIN message ON message_to_class.message_id = message.id
+        AND DATE (message.create_time) = #{date}
+        JOIN clock ON message.id = clock.message_id
+        And student_id= user.work_id
+    </select>
+
+    <!--查询学生信息-->
+    <select id="getUserById" resultType="com.sipc.clockin.pojo.domain.DO.UserInfo">
+        select u.name,u.work_id as studentId,u.email,u.grade,u.dormitory,c.name as collegeName,cl.name as
+        className,m.name as majorName
+        from user u
+        inner join college c on u.college_id = c.id
+        inner join clazz cl on u.class_id = cl.id
+        inner join major m on u.major_id = m.id
+        where u.work_id = #{id}
     </select>
 </mapper>
