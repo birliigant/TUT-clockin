@@ -128,6 +128,7 @@ public class TeacherServiceImpl implements TeacherService {
         return CommonResult.success("删除学生管理员成功");
     }
 
+    @Role(identities = {RoleEnum.MANAGER})
     @Override
     public CommonResult<List<UserSimple>> selectStudents(int classId) {
         if (ObjectUtil.isEmpty(classId)){
