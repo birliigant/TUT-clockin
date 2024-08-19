@@ -7,6 +7,7 @@ import com.sipc.clockin.pojo.domain.DO.UserInfo;
 import com.sipc.clockin.pojo.domain.PO.Clock;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.request.ClockRequest;
+import com.sipc.clockin.pojo.model.request.UpdateStudentRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.StudentClockDetail;
@@ -72,5 +73,17 @@ public class StudentServiceImpl implements StudentService {
         UserInfo userInfo = studentMapper.getUserById(studentId);
         return CommonResult.success(userInfo);
     }
+
+    @Override
+    public CommonResult<BlankResult> updateUserInfo(UpdateStudentRequest request) {
+        Integer studentId = TokenHandler.getTokenModelThreadLocal().getWorkId();
+        Integer i = studentMapper.updateUserInfo(studentId, request);
+        if (i == 1) {
+            return CommonResult.success("更新成功");
+        } else {
+            return CommonResult.fail("更新失败");
+        }
+    }
+
 
 }
