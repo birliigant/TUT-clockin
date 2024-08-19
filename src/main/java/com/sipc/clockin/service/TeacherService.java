@@ -5,7 +5,6 @@ import com.sipc.clockin.pojo.domain.DO.UserSimple;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
-import com.sipc.clockin.pojo.model.request.SelectStudentRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 
@@ -18,6 +17,5 @@ public interface TeacherService {
     CommonResult<BlankResult> deleteClass(ClassRequest request);
     CommonResult<BlankResult> addManager(ManageRequest request);
     CommonResult<BlankResult> deleteManager(ManageRequest request);
-    CommonResult<List<UserSimple>> selectStudents(SelectStudentRequest request);
-
+    CommonResult<List<UserSimple>> selectStudents(int classId);
 }
