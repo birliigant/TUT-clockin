@@ -1,7 +1,7 @@
 package com.sipc.clockin.pojo.model.result;
 
 import cn.hutool.core.date.DateTime;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,18 +9,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HomeClassResult {
-
+public class StudentClockDetail {
     private Integer workId;
     private String name;
     private String dormitory;
-
-    @JsonProperty("message_id")
+    @JsonIgnore
+    private Integer classId;
+    @JsonIgnore
+    private String className;
+    @JsonIgnore
+    private Integer num;
+    @JsonIgnore
     private Integer messageId;
-    @JsonProperty("start_time")
+    @JsonIgnore
     private DateTime startTime;
-    @JsonProperty("end_time")
+    @JsonIgnore
     private DateTime endTime;
     private Integer type;
     private String reason;
+
 }
