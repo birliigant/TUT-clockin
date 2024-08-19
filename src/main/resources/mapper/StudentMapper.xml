@@ -11,18 +11,24 @@
 
     <select id="getClockInformation" resultType="com.sipc.clockin.pojo.model.result.HomePageResult">
         SELECT * FROM user AS u
-            JOIN class AS c ON u.class_id = c.id #获取班级名
-            JOIN message_to_class m ON u.class_id = m.class_id #获取班级对应的messageId
-            JOIN message ON message.id = m.message_id #获取对应message的start和endTime
-                where u.id = #{id} and curdate(message.create_time) = #{date}
+            JOIN class AS c ON u.class_id = c.id #获取班级信息
     </select>
     <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">
-        SELECT * FROM user
-            JOIN clock ON student_id = user.id #获取打卡情况
-            JOIN message ON message_id = message.id #获取打卡消息
-                WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}
+        SELECT * FROM class
+            JOIN message_to_class AS m ON m.class_id = #{classId}
+            JOIN message ON m.message_id = message.id AND curdate(message.create_time) = #{date}
+#                 WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}
     </select>
     <select id="getClockRecord" resultType="com.sipc.clockin.pojo.domain.PO.Clock">
         select * from clock where student_id = #{id}
+    </select>
+    <select id="getClassClock" resultType="com.sipc.clockin.pojo.model.result.StudentClockDetail">
+        select * from user JOIN class ON user.class_id = class.id
+                                AND user.class_id = (SELECT class_id from user where work_id = #{workId})
+                           JOIN message_to_class ON class.id = message_to_class.class_id
+                           JOIN message ON message_to_class.message_id = message.id
+                                AND DATE (message.create_time) = #{date}
+                           JOIN clock ON message.id = clock.message_id
+                                And student_id= user.work_id
     </select>
 </mapper>
