@@ -13,6 +13,6 @@ public class ClockRequest {
     private Integer classId;
     private Integer messageId;
     private DateTime time;
-    private Integer type;
+    private String type;
     private String reason;
 }

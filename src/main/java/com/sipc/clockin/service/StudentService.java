@@ -8,6 +8,7 @@ import com.sipc.clockin.pojo.model.request.ClockRequest;
 import com.sipc.clockin.pojo.model.request.UpdateStudentRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
+import com.sipc.clockin.pojo.model.result.RestResult;
 import com.sipc.clockin.pojo.model.result.StudentClockDetail;
 
 import java.util.List;
@@ -20,9 +21,8 @@ public interface StudentService {
     CommonResult<BlankResult> clockIn(ClockRequest request);
 
     CommonResult<List<StudentClockDetail>> getAdminRecord(DateTime date);
-
-
-    //查询个人信息
+    CommonResult<RestResult> getRestInfo(Integer classId);
+    //查询用户信息
     CommonResult<UserInfo> getUserInfo();
 
     //修改个人信息

@@ -8,4 +8,7 @@
            </foreach>
          AND is_deleted = 0
     </select>
+    <select id="selectIdByName" resultType="java.lang.Integer">
+        SELECT clazz.id FROM clazz WHERE clazz.name = #{className}
+    </select>
 </mapper>
