@@ -45,7 +45,8 @@ public class StudentController {
     private CommonResult<BlankResult> clockIn(@RequestBody ClockRequest request){
         return studentService.clockIn(request);
     }
-    @GetMapping("leave")
+    //获取请假详情
+    @GetMapping("/leave")
     private CommonResult<RestResult> getRestInfo(@RequestParam("clock_id") Integer clockId){
         return studentService.getRestInfo(clockId);
     }
@@ -54,7 +55,7 @@ public class StudentController {
     //查看个人信息
     @GetMapping("/info")
     private CommonResult<UserInfo> getInfo() {
-        return studentServiceImpl.getUserInfo();
+        return studentService.getUserInfo();
     }
 
 }

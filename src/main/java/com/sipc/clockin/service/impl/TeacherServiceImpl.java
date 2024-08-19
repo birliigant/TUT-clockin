@@ -1,16 +1,18 @@
 package com.sipc.clockin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.sipc.clockin.enums.RoleEnum;
 import com.sipc.clockin.handler.interceptor.Role;
 import com.sipc.clockin.handler.token.TokenHandler;
 import com.sipc.clockin.mapper.ClazzMapper;
+import com.sipc.clockin.mapper.StudentMapper;
 import com.sipc.clockin.mapper.UserMapper;
+import com.sipc.clockin.pojo.domain.DO.Teacher;
 import com.sipc.clockin.pojo.domain.DO.TeacherInfo;
 import com.sipc.clockin.pojo.domain.DO.UserSimple;
-import com.sipc.clockin.pojo.domain.DO.Teacher;
 import com.sipc.clockin.pojo.domain.PO.User;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.TokenModel;
@@ -18,7 +20,11 @@ import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
+import com.sipc.clockin.pojo.model.result.HomePageResult;
+import com.sipc.clockin.pojo.model.result.RestResult;
+import com.sipc.clockin.pojo.model.result.StudentClockDetail;
 import com.sipc.clockin.service.TeacherService;
+import com.sipc.clockin.utils.DateTimeParseUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +36,7 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
     private ClazzMapper clazzMapper;
     private UserMapper userMapper;
+    private StudentMapper studentMapper;
     @Role(identities = {RoleEnum.MANAGER})
     @Override
     public CommonResult<TeacherInfo> queryTeacherInfo() {
@@ -151,5 +158,43 @@ public class TeacherServiceImpl implements TeacherService {
             return CommonResult.fail("未查询到学生");
         }
         return CommonResult.success("查询成功", users);
+    }
+    //老师获取首页
+    @Override
+    public CommonResult<HomePageResult> getTeacherHomePage(String className) {
+        Integer classId = clazzMapper.selectIdByName(className);
+        //因为和学生的界面长得都差不多,拿一个当前班级的学生id
+        List<Integer> aClass = studentMapper.getClass(classId);
+        Integer studentId = aClass.get(0);
+        DateTime date = new DateTime();
+        //获取班级所有人的详细打卡记录
+        List<StudentClockDetail> classClock = studentMapper.getClassClock(studentId, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
+        //统计当前打卡轮次中参与人数
+        Integer completionNum = 0;
+        for (StudentClockDetail tem : classClock) {
+            if (tem.getIsPass() != 0) completionNum++;
+        }
+        StudentClockDetail studentClockDetail = classClock.get(0);
+        HomePageResult result = new HomePageResult(
+                studentClockDetail.getClassId(),studentClockDetail.getClassName(),
+                studentClockDetail.getStudentNum(),studentClockDetail.getMessageId(),
+                studentClockDetail.getStartTime(),studentClockDetail.getEndTime(),
+                completionNum,classClock
+        );
+        return CommonResult.success(result);
+    }
+    //老师查看打卡记录
+    @Override
+    public CommonResult<List<StudentClockDetail>> getTeacherRecord(Integer classId,DateTime date) {
+        List<Integer> aClass = studentMapper.getClass(classId);
+        Integer workId = aClass.get(0);
+        List<StudentClockDetail> classClock = studentMapper.getClassClock(workId, date);
+        return CommonResult.success(classClock);
+    }
+    //获取请假详情
+    @Override
+    public CommonResult<RestResult> getRestInfo(Integer clockId){
+        RestResult restInfo = studentMapper.getRestInfo(clockId);
+        return CommonResult.success(restInfo);
     }
 }

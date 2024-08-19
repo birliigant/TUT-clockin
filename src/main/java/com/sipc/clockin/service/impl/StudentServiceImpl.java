@@ -15,7 +15,7 @@ import com.sipc.clockin.service.StudentService;
 import com.sipc.clockin.utils.DateTimeParseUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.apache.el.parser.Token;
+
 import java.util.List;
 
 @Service
@@ -26,7 +26,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public CommonResult<HomePageResult> getHomePage() {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
-        //TODO: 可能需要保留为只有日期
         DateTime date = new DateTime();
         //获取班级所有人的详细打卡记录
         List<StudentClockDetail> classClock = studentMapper.getClassClock(id, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
@@ -57,37 +56,6 @@ public class StudentServiceImpl implements StudentService {
     public CommonResult<List<StudentClockDetail>> getAdminRecord(DateTime date) {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
         List<StudentClockDetail> classClock = studentMapper.getClassClock(id, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
-        return CommonResult.success(classClock);
-    }
-    //老师获取首页
-    @Override
-    public CommonResult<HomePageResult> getTeacherHomePage(Integer classId) {
-        //因为和学生的界面长得都差不多,拿一个当前班级的学生id
-        List<Integer> aClass = studentMapper.getClass(classId);
-        Integer studentId = aClass.get(0);
-        //TODO: 可能需要保留为只有日期
-        DateTime date = new DateTime();
-        //获取班级所有人的详细打卡记录
-        List<StudentClockDetail> classClock = studentMapper.getClassClock(studentId, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
-        //统计当前打卡轮次中参与人数
-        Integer completionNum = 0;
-        for (StudentClockDetail tem : classClock) {
-            if (tem.getIsPass() != 0) completionNum++;
-        }
-        StudentClockDetail studentClockDetail = classClock.get(0);
-        HomePageResult result = new HomePageResult(
-                studentClockDetail.getClassId(),studentClockDetail.getClassName(),
-                studentClockDetail.getStudentNum(),studentClockDetail.getMessageId(),
-                studentClockDetail.getStartTime(),studentClockDetail.getEndTime(),
-                completionNum,classClock
-        );
-        return CommonResult.success(result);
-    }
-    //老师查看打卡记录
-    public CommonResult<List<StudentClockDetail>> getTeacherRecord(Integer classId,DateTime date) {
-        List<Integer> aClass = studentMapper.getClass(classId);
-        Integer workId = aClass.get(0);
-        List<StudentClockDetail> classClock = studentMapper.getClassClock(workId, date);
         return CommonResult.success(classClock);
     }
 

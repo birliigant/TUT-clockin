@@ -10,4 +10,5 @@ import java.util.List;
 @Mapper
 public interface ClazzMapper extends BaseMapper<Clazz> {
     List<String> selectNameByIds(@Param("ids") List<Integer> ids);
+    Integer selectIdByName(String className);
 }

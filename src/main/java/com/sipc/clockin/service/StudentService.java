@@ -20,10 +20,7 @@ public interface StudentService {
     CommonResult<BlankResult> clockIn(ClockRequest request);
 
     CommonResult<List<StudentClockDetail>> getAdminRecord(DateTime date);
-    CommonResult<HomePageResult> getTeacherHomePage(Integer classId);
     CommonResult<RestResult> getRestInfo(Integer classId);
-
-
     //查询用户信息
     CommonResult<UserInfo> getUserInfo();
 
