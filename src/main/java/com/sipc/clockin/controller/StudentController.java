@@ -5,6 +5,7 @@ import com.sipc.clockin.pojo.domain.DO.UserInfo;
 import com.sipc.clockin.pojo.domain.PO.Clock;
 import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.request.ClockRequest;
+import com.sipc.clockin.pojo.model.request.UpdateStudentRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.RestResult;
@@ -53,9 +54,16 @@ public class StudentController {
 
 
     //查看个人信息
+    // TODO: 未查询头像
     @GetMapping("/info")
     private CommonResult<UserInfo> getInfo() {
         return studentService.getUserInfo();
     }
 
+    //修改个人信息
+    //TODO: 未修改头像
+    @PostMapping("/info")
+    private CommonResult<BlankResult> updateInfo(@RequestBody UpdateStudentRequest request) {
+        return studentServiceImpl.updateUserInfo(request);
+    }
 }
