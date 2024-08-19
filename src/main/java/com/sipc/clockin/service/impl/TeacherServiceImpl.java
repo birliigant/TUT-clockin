@@ -14,7 +14,6 @@ import com.sipc.clockin.pojo.model.CommonResult;
 import com.sipc.clockin.pojo.model.TokenModel;
 import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
-import com.sipc.clockin.pojo.model.request.SelectStudentRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.service.TeacherService;
@@ -130,11 +129,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public CommonResult<List<UserSimple>> selectStudents(SelectStudentRequest request) {
-        if (ObjectUtil.isEmpty(request.getClassId())){
+    public CommonResult<List<UserSimple>> selectStudents(int classId) {
+        if (ObjectUtil.isEmpty(classId)){
             return CommonResult.fail("请求错误");
         }
-        List<UserSimple> users = userMapper.selectStudent(request.getClassId());
+        List<UserSimple> users = userMapper.selectStudent(classId);
         if (ObjectUtil.isEmpty(users)){
             return CommonResult.fail("未查询到学生");
         }
