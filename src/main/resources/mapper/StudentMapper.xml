@@ -39,4 +39,29 @@
         inner join major m on u.major_id = m.id
         where u.work_id = #{id}
     </select>
+    <!--修改学生信息-->
+    <!-- 修改学生信息 -->
+    <update id="updateUserInfo">
+        UPDATE user
+        <set>
+            <if test="request.grade != null">
+                grade = #{request.grade},
+            </if>
+            <if test="request.dormitory != null and request.dormitory != ''">
+                dormitory = #{request.dormitory},
+            </if>
+            <if test="request.collegeId != null">
+                college_id = #{request.collegeId},
+            </if>
+            <if test="request.classId != null">
+                class_id = #{request.classId},
+            </if>
+            <if test="request.majorId != null">
+                major_id = #{request.majorId}
+            </if>
+        </set>
+        WHERE work_id = #{studentId}
+    </update>
+
+
 </mapper>
