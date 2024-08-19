@@ -41,9 +41,4 @@ public class StudentController {
     private CommonResult<BlankResult> clockIn(ClockRequest request){
         return studentService.clockIn(request);
     }
-    //管理员新建打卡message
-    @PostMapping("/create")
-    private CommonResult<BlankResult> createMessage(){
-        return studentService.createMessage();
-    }
 }

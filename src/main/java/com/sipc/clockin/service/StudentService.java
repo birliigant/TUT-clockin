@@ -15,5 +15,4 @@ public interface StudentService {
     CommonResult<List<Clock>> getClockRecord();
     CommonResult<BlankResult> clockIn(ClockRequest request);
     CommonResult<List<StudentClockDetail>> getAdminRecord(DateTime date);
-    CommonResult<BlankResult> createMessage();
 }

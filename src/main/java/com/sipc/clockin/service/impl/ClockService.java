@@ -17,11 +17,12 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class StudentServiceImpl implements StudentService {
+public class ClockService implements StudentService {
     private final StudentMapper studentMapper;
     @Override
     public CommonResult<HomePageResult> getHomePage() {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
+        //TODO: 可能需要保留为只有日期
         DateTime date = new DateTime();
         //获取班级所有人的详细打卡记录
         List<StudentClockDetail> classClock = studentMapper.getClassClock(id, date);
@@ -53,15 +54,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public CommonResult<BlankResult> createMessage() {
-        return null;
-    }
-
-    @Override
     public CommonResult<BlankResult> clockIn(ClockRequest request) {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
-        HomePageResult clockInformation = studentMapper.getClockInformation(id,request.getTime());
-        studentMapper.addClock(request,clockInformation.getClassId(),clockInformation.getMessageId());
+        request.setStudentId(id);
+        studentMapper.addClock(request);
         return CommonResult.success();
     }
 }

@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sipc.clockin.mapper.StudentMapper">
-    <insert id="addClock">
-        insert into clock (message_id, student_id, class_id, type,time,reason)
-            VALUE (#{messageId},#{studentId},#{classId},#{type},#{time},#{reason})
-    </insert>
-    <insert id="addMessage">
-#         insert into message (location, create_time, start_time, end_time, is_deleted) VALUE
-    </insert>
+    <update id="addClock">
+        UPDATE clock SET type = #{type}, time = #{time}, reason = #{reason}
+                     WHERE message_id = #{messageId} AND clock.class_id = #{classId} AND student_id = #{studentId}
+    </update>
 
-    <select id="getClockInformation" resultType="com.sipc.clockin.pojo.model.result.HomePageResult">
-        SELECT * FROM user AS u
-            JOIN class AS c ON u.class_id = c.id #获取班级信息
-    </select>
-    <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">
-        SELECT * FROM class
-            JOIN message_to_class AS m ON m.class_id = #{classId}
-            JOIN message ON m.message_id = message.id AND curdate(message.create_time) = #{date}
-#                 WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}
-    </select>
+<!--    <select id="getClockInformation" resultType="com.sipc.clockin.pojo.model.result.HomePageResult">-->
+<!--        SELECT * FROM user AS u-->
+<!--            JOIN class AS c ON u.class_id = c.id #获取班级信息-->
+<!--    </select>-->
+<!--    <select id="getClassInformation" resultType="com.sipc.clockin.pojo.model.result.HomeClassResult">-->
+<!--        SELECT * FROM class-->
+<!--            JOIN message_to_class AS m ON m.class_id = #{classId}-->
+<!--            JOIN message ON m.message_id = message.id AND curdate(message.create_time) = #{date}-->
+<!--#                 WHERE user.class_id = #{classId} AND curdate(message.create_time) = #{date}-->
+<!--    </select>-->
     <select id="getClockRecord" resultType="com.sipc.clockin.pojo.domain.PO.Clock">
         select * from clock where student_id = #{id}
     </select>
