@@ -1,6 +1,8 @@
 package com.sipc.clockin.controller;
 
 import cn.hutool.core.date.DateTime;
+import com.sipc.clockin.enums.RoleEnum;
+import com.sipc.clockin.handler.interceptor.Role;
 import com.sipc.clockin.pojo.domain.DO.TeacherInfo;
 import com.sipc.clockin.pojo.domain.DO.UserSimple;
 import com.sipc.clockin.pojo.model.CommonResult;
@@ -53,17 +55,20 @@ public class TeacherController {
     }
     //老师查看打卡记录
     @GetMapping("/record")
+    @Role(identities = {RoleEnum.MANAGER})
     CommonResult<List<StudentClockDetail>> getTeacherRecord(@RequestParam("class_id") Integer classId,
                                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") DateTime date){
         return teacherService.getTeacherRecord(classId,date);
     }
     //获取首页信息
     @GetMapping("/home")
+    @Role(identities = {RoleEnum.MANAGER})
     private CommonResult<HomePageResult> getHomePage(@RequestParam("class_name") String className){
         return teacherService.getTeacherHomePage(className);
     }
     //获取请假详情
     @GetMapping("/leave")
+    @Role(identities = {RoleEnum.MANAGER})
     private CommonResult<RestResult> getRestInfo(@RequestParam("clock_id") Integer clockId){
         return teacherService.getRestInfo(clockId);
     }
