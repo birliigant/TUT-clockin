@@ -7,7 +7,7 @@
     </update>
 
     <select id="getClockRecord" resultType="com.sipc.clockin.pojo.domain.PO.Clock">
-        select * from clock where student_id = #{id}
+        select * from clock where student_id = #{id} AND time >= #{date}
     </select>
     <select id="getClassClock" resultType="com.sipc.clockin.pojo.model.result.StudentClockDetail">
         select work_id,user.name user_name,dormitory,user.class_id,clazz.name class_name,student_num,
@@ -16,9 +16,10 @@
                  JOIN clazz ON (user.class_id = clazz.id AND user.class_id = (SELECT class_id from user where work_id = #{workId}))
                  JOIN message_to_class ON clazz.id = message_to_class.class_id
                  JOIN message ON (message_to_class.message_id = message.id
-            AND DATE (message.create_time) = #{date})
+                    AND DATE (message.create_time) = #{date})
                  JOIN clock ON (message.id = clock.message_id
-            And student_id= user.work_id);
+                    And student_id= user.work_id
+                    AND DATE(time) = DATE (message.create_time));
     </select>
     <select id="getClass" resultType="java.lang.Integer">
         SELECT user.work_id FROM user WHERE class_id = #{classId}

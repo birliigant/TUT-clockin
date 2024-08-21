@@ -2,6 +2,7 @@ package com.sipc.clockin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.sipc.clockin.enums.RoleEnum;
@@ -25,10 +26,13 @@ import com.sipc.clockin.pojo.model.result.RestResult;
 import com.sipc.clockin.pojo.model.result.StudentClockDetail;
 import com.sipc.clockin.service.TeacherService;
 import com.sipc.clockin.utils.DateTimeParseUtils;
+import com.sipc.clockin.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -163,18 +167,37 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public CommonResult<HomePageResult> getTeacherHomePage(String className) {
         Integer classId = clazzMapper.selectIdByName(className);
-        //因为和学生的界面长得都差不多,拿一个当前班级的学生id
+        //因为和学生的界面长得都差不多,拿一个当前班级的学生id,然后用学生管理看首页的逻辑
+        if(classId == null) return CommonResult.fail("未查询到当前班级,请检查输入内容");
         List<Integer> aClass = studentMapper.getClass(classId);
         Integer studentId = aClass.get(0);
         DateTime date = new DateTime();
         //获取班级所有人的详细打卡记录
         List<StudentClockDetail> classClock = studentMapper.getClassClock(studentId, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
+        if (classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡信息");
         //统计当前打卡轮次中参与人数
         Integer completionNum = 0;
         for (StudentClockDetail tem : classClock) {
             if (tem.getIsPass() != 0) completionNum++;
         }
+        //将共有部分提取到Result中
         StudentClockDetail studentClockDetail = classClock.get(0);
+        FLAG:
+        for (StudentClockDetail tem : classClock){
+            studentClockDetail = tem;
+            //检查当前数据中是否有空字段(防止单个数据存储错误导致返回结果为空)
+            try {
+                for (Field f : studentClockDetail.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    if (f.get(studentClockDetail) == null || StringUtils.isEmpty(f.get(studentClockDetail).toString())) {
+                        continue FLAG;
+                    }
+                }
+            }catch (Exception e){
+                continue;
+            }
+            break;//(os:应该不会一个班没有一条记录是正确的吧...
+        }
         HomePageResult result = new HomePageResult(
                 studentClockDetail.getClassId(),studentClockDetail.getClassName(),
                 studentClockDetail.getStudentNum(),studentClockDetail.getMessageId(),
@@ -187,14 +210,21 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public CommonResult<List<StudentClockDetail>> getTeacherRecord(Integer classId,DateTime date) {
         List<Integer> aClass = studentMapper.getClass(classId);
+        if (aClass == null || aClass.isEmpty()) return CommonResult.fail("未查询到当前班级,请检查输入内容");
         Integer workId = aClass.get(0);
-        List<StudentClockDetail> classClock = studentMapper.getClassClock(workId, date);
+        if(date == null) date = new DateTime();
+        if(date.isBefore(DateUtil.offsetDay(new Date(),-7))) return CommonResult.fail("仅显示最近一周打卡记录");
+        //只保留日期
+        List<StudentClockDetail> classClock = studentMapper.getClassClock(workId, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
+        if(classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡记录");
         return CommonResult.success(classClock);
     }
     //获取请假详情
     @Override
     public CommonResult<RestResult> getRestInfo(Integer clockId){
         RestResult restInfo = studentMapper.getRestInfo(clockId);
+        if(restInfo == null) return CommonResult.fail("未查询到该打卡信息");
+        if(StringUtils.isEmpty(restInfo.getReason())) return  CommonResult.fail("未查询到当前打卡记录请假原因");
         return CommonResult.success(restInfo);
     }
 }
