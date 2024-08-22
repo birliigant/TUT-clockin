@@ -1,6 +1,7 @@
 package com.sipc.clockin.pojo.model.result;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class HomePageResult {
     private Integer classId;
     private String className;
@@ -22,4 +24,5 @@ public class HomePageResult {
     private Date endTime;
     private Integer completionNum;
     private List<StudentClockDetail> classClock;
+    private List<StudentClockDetail> typeClock;
 }

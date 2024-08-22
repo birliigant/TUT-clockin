@@ -18,8 +18,7 @@
                  JOIN message ON (message_to_class.message_id = message.id
                     AND DATE (message.create_time) = #{date})
                  JOIN clock ON (message.id = clock.message_id
-                    And student_id= user.work_id
-                    AND DATE(time) = DATE (message.create_time));
+                    And student_id= user.work_id);
     </select>
     <select id="getClass" resultType="java.lang.Integer">
         SELECT user.work_id FROM user WHERE class_id = #{classId}

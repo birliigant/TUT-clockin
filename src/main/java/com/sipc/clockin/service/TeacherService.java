@@ -10,7 +10,6 @@ import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.RestResult;
-import com.sipc.clockin.pojo.model.result.StudentClockDetail;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface TeacherService {
     CommonResult<BlankResult> addManager(ManageRequest request);
     CommonResult<BlankResult> deleteManager(ManageRequest request);
     CommonResult<List<UserSimple>> selectStudents(int classId);
-    CommonResult<HomePageResult> getTeacherHomePage(String className);
-    CommonResult<List<StudentClockDetail>> getTeacherRecord(Integer classId, DateTime date);
+    CommonResult<HomePageResult> getTeacherHomePage(String className,String type);
+    CommonResult<HomePageResult> getTeacherRecord(Integer classId, DateTime date,String type);
     CommonResult<RestResult> getRestInfo(Integer clockId);
 }
