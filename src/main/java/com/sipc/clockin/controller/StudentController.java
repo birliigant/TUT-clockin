@@ -11,7 +11,6 @@ import com.sipc.clockin.pojo.model.request.UpdateStudentRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.RestResult;
-import com.sipc.clockin.pojo.model.result.StudentClockDetail;
 import com.sipc.clockin.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,11 +23,18 @@ import java.util.List;
 @RequestMapping("/student")
 public class StudentController {
     private final StudentService studentService;
-    //获取首页信息
+    //一般学生获取首页信息
+    @GetMapping("/ordinary/home")
+    @Role(identities = {RoleEnum.ORDINARY})
+    private CommonResult<HomePageResult> getOrdinaryHomePage(){
+        return studentService.getOrdinaryHomePage();
+    }
+    //管理员获取首页信息
     @GetMapping("/home")
-    @Role(identities = {RoleEnum.CENTRE,RoleEnum.ORDINARY,})
-    private CommonResult<HomePageResult> getHomePage(){
-        return studentService.getHomePage();
+    @Role(identities = {RoleEnum.CENTRE})
+    private CommonResult<HomePageResult> getHomePage(
+            @RequestParam(value = "type",required = false,defaultValue = "打卡") String type){
+        return studentService.getHomePage(type);
     }
 
     //普通学生查看历史打卡记录
@@ -41,9 +47,10 @@ public class StudentController {
     //管理员查看历史打卡记录
     @GetMapping("record")
     @Role(identities = {RoleEnum.CENTRE})
-    private CommonResult<List<StudentClockDetail>>getAdminRecord(
+    private CommonResult<HomePageResult>getAdminRecord(
+            @RequestParam(value = "type",required = false,defaultValue = "打卡") String type,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") DateTime date){
-        return studentService.getAdminRecord(date);
+        return studentService.getAdminRecord(type,date);
     }
 
     //打卡

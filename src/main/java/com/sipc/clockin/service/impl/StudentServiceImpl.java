@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,9 +28,9 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
-    //获取首页信息
+    //管理员获取首页信息
     @Override
-    public CommonResult<HomePageResult> getHomePage() {
+    public CommonResult<HomePageResult> getHomePage(String type) {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
         DateTime date = new DateTime();
         //获取班级所有人的详细打卡记录
@@ -37,8 +38,12 @@ public class StudentServiceImpl implements StudentService {
         if (classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡信息");
         //统计当前打卡轮次中参与人数
         Integer completionNum = 0;
+        List<StudentClockDetail> typeClock = new ArrayList<>();
         for (StudentClockDetail tem : classClock) {
             if (tem.getIsPass() != 0) completionNum++;
+            //筛选要单独显示的type类型记录
+            if (type.equals("打卡") && tem.getIsPass() == 0) typeClock.add(tem);
+            else if (type.equals("请假") && StringUtils.isNotEmpty(tem.getType()) && tem.getType().equals(type)) typeClock.add(tem);
         }
         //将共有部分提取到Result中
         StudentClockDetail studentClockDetail = classClock.get(0);
@@ -62,7 +67,7 @@ public class StudentServiceImpl implements StudentService {
                 studentClockDetail.getClassId(),studentClockDetail.getClassName(),
                 studentClockDetail.getStudentNum(),studentClockDetail.getMessageId(),
                 studentClockDetail.getStartTime(),studentClockDetail.getEndTime(),
-                completionNum,classClock
+                completionNum,classClock,typeClock
         );
         return CommonResult.success(result);
     }
@@ -78,14 +83,26 @@ public class StudentServiceImpl implements StudentService {
     }
     //管理员获取打卡记录
     @Override
-    public CommonResult<List<StudentClockDetail>> getAdminRecord(DateTime date) {
+    public CommonResult<HomePageResult> getAdminRecord(String type,DateTime date) {
         Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
         if(date == null) date = new DateTime();
         if(date.isBefore(DateUtil.offsetDay(new Date(),-7))) return CommonResult.fail("仅显示最近一周打卡记录");
         //只保留日期
         List<StudentClockDetail> classClock = studentMapper.getClassClock(id, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
         if(classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡记录");
-        return CommonResult.success(classClock);
+        List<StudentClockDetail> typeClock = new ArrayList<>();
+        //筛选要单独显示的type类型记录
+        for (StudentClockDetail tem : classClock) {
+            if (type.equals("打卡") && tem.getIsPass() == 0) typeClock.add(tem);
+            else if (type.equals("请假") && StringUtils.isNotEmpty(tem.getType()) && tem.getType().equals(type)) typeClock.add(tem);
+        }
+        HomePageResult result = new HomePageResult(
+                null,null,
+                null,null,
+                null,null,
+                null,classClock,typeClock
+        );
+        return CommonResult.success(result);
     }
 
     //打卡
@@ -122,6 +139,45 @@ public class StudentServiceImpl implements StudentService {
         } else {
             return CommonResult.fail("更新失败");
         }
+    }
+
+    @Override
+    public CommonResult<HomePageResult> getOrdinaryHomePage() {
+        Integer id = TokenHandler.getTokenModelThreadLocal().getWorkId();
+        DateTime date = new DateTime();
+        //获取班级所有人的详细打卡记录
+        List<StudentClockDetail> classClock = studentMapper.getClassClock(id, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
+        if (classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡信息");
+        //统计当前打卡轮次中参与人数
+        Integer completionNum = 0;
+        for (StudentClockDetail tem : classClock) {
+            if (tem.getIsPass() != 0) completionNum++;
+        }
+        //将共有部分提取到Result中
+        StudentClockDetail studentClockDetail = classClock.get(0);
+        FLAG:
+        for (StudentClockDetail tem : classClock){
+            studentClockDetail = tem;
+            //检查当前数据中是否有空字段(防止单个数据存储错误导致返回结果为空)
+            try {
+                for (Field f : studentClockDetail.getClass().getDeclaredFields()) {
+                    f.setAccessible(true);
+                    if (f.get(studentClockDetail) == null || StringUtils.isEmpty(f.get(studentClockDetail).toString())) {
+                        continue FLAG;
+                    }
+                }
+            }catch (Exception e){
+                continue;
+            }
+            break;//(os:应该不会一个班没有一条记录是正确的吧...
+        }
+        HomePageResult result = new HomePageResult(
+                studentClockDetail.getClassId(),studentClockDetail.getClassName(),
+                studentClockDetail.getStudentNum(),studentClockDetail.getMessageId(),
+                studentClockDetail.getStartTime(),studentClockDetail.getEndTime(),
+                completionNum,classClock,null
+        );
+        return CommonResult.success(result);
     }
 
 

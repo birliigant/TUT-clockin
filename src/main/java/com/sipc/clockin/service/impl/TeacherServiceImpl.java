@@ -165,20 +165,24 @@ public class TeacherServiceImpl implements TeacherService {
     }
     //老师获取首页
     @Override
-    public CommonResult<HomePageResult> getTeacherHomePage(String className) {
+    public CommonResult<HomePageResult> getTeacherHomePage(String className,String type) {
         Integer classId = clazzMapper.selectIdByName(className);
         //因为和学生的界面长得都差不多,拿一个当前班级的学生id,然后用学生管理看首页的逻辑
         if(classId == null) return CommonResult.fail("未查询到当前班级,请检查输入内容");
         List<Integer> aClass = studentMapper.getClass(classId);
-        Integer studentId = aClass.get(0);
+        Integer id = aClass.get(0);
         DateTime date = new DateTime();
         //获取班级所有人的详细打卡记录
-        List<StudentClockDetail> classClock = studentMapper.getClassClock(studentId, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
+        List<StudentClockDetail> classClock = studentMapper.getClassClock(id, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
         if (classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡信息");
         //统计当前打卡轮次中参与人数
         Integer completionNum = 0;
+        List<StudentClockDetail> typeClock = new ArrayList<>();
         for (StudentClockDetail tem : classClock) {
             if (tem.getIsPass() != 0) completionNum++;
+            //筛选要单独显示的type类型记录
+            if (type.equals("打卡") && tem.getIsPass() == 0) typeClock.add(tem);
+            else if (type.equals("请假") && StringUtils.isNotEmpty(tem.getType()) && tem.getType().equals(type)) typeClock.add(tem);
         }
         //将共有部分提取到Result中
         StudentClockDetail studentClockDetail = classClock.get(0);
@@ -202,13 +206,14 @@ public class TeacherServiceImpl implements TeacherService {
                 studentClockDetail.getClassId(),studentClockDetail.getClassName(),
                 studentClockDetail.getStudentNum(),studentClockDetail.getMessageId(),
                 studentClockDetail.getStartTime(),studentClockDetail.getEndTime(),
-                completionNum,classClock
+                completionNum,classClock,typeClock
         );
         return CommonResult.success(result);
     }
     //老师查看打卡记录
     @Override
-    public CommonResult<List<StudentClockDetail>> getTeacherRecord(Integer classId,DateTime date) {
+    public CommonResult<HomePageResult> getTeacherRecord(Integer classId,DateTime date,String type) {
+        //获取班里人的学号
         List<Integer> aClass = studentMapper.getClass(classId);
         if (aClass == null || aClass.isEmpty()) return CommonResult.fail("未查询到当前班级,请检查输入内容");
         Integer workId = aClass.get(0);
@@ -217,7 +222,19 @@ public class TeacherServiceImpl implements TeacherService {
         //只保留日期
         List<StudentClockDetail> classClock = studentMapper.getClassClock(workId, DateTime.of(DateTimeParseUtils.getStartOfDay(date)));
         if(classClock == null || classClock.isEmpty()) return CommonResult.fail("未查询到相关打卡记录");
-        return CommonResult.success(classClock);
+        List<StudentClockDetail> typeClock = new ArrayList<>();
+        //筛选要单独显示的type类型记录
+        for (StudentClockDetail tem : classClock) {
+            if (type.equals("打卡") && tem.getIsPass() == 0) typeClock.add(tem);
+            else if (type.equals("请假") && StringUtils.isNotEmpty(tem.getType()) && tem.getType().equals(type)) typeClock.add(tem);
+        }
+        HomePageResult result = new HomePageResult(
+                null,null,
+                null,null,
+                null,null,
+                null,classClock,typeClock
+        );
+        return CommonResult.success(result);
     }
     //获取请假详情
     @Override
