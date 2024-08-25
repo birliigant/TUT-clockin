@@ -51,7 +51,7 @@ public class TeacherServiceImpl implements TeacherService {
         BeanUtil.copyProperties(teacher, teacherInfo);
         List<Integer> ids = new ArrayList<>();
         for (String s : teacher.getClassIds().substring(1, teacher.getClassIds().length() - 1).split(",")) {
-            ids.add(Integer.valueOf(s));
+            ids.add(Integer.valueOf(s.trim()));
         }
         if (ObjectUtil.isEmpty(ids)){
             return CommonResult.fail("查询失败");
@@ -86,7 +86,7 @@ public class TeacherServiceImpl implements TeacherService {
         List<Integer> ids = new ArrayList<>();
         for (String id : strIds) {
             StrUtil.trim(id);
-            ids.add(Integer.valueOf(id));
+            ids.add(Integer.valueOf(id.trim()));
         }
         for (int classId : request.getClassIds()) {
             ids.add(classId);
@@ -113,10 +113,10 @@ public class TeacherServiceImpl implements TeacherService {
         List<Integer> ids = new ArrayList<>();
         for (String id : strIds) {
             StrUtil.trim(id);
-            ids.add(Integer.valueOf(id));
+            ids.add(Integer.valueOf(id.trim()));
         }
         for (int classId : request.getClassIds()) {
-            ids.remove(classId);
+            ids.remove((Integer) classId);
         }
         String classIds = ids.toString();
         if (userMapper.updateClassIds(classIds, token.getWorkId()) == 0){

@@ -7,6 +7,6 @@ public class Teacher {
     private String name;
     private int workId;
     private String email;
-    private int collegeName;
+    private String collegeName;
     private String classIds;
 }

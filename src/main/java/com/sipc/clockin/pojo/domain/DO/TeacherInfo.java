@@ -12,7 +12,7 @@ public class TeacherInfo {
     private int workId;
     private String email;
     @JsonProperty("college_name")
-    private int collegeName;
+    private String collegeName;
     @JsonProperty("class_names")
     private List<String> classNames;
 }
