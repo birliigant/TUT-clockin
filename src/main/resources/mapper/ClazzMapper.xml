@@ -9,7 +9,7 @@
          AND is_deleted = 0
     </select>
     <select id="selectIdByName" resultType="java.lang.Integer">
-        SELECT clazz.id FROM clazz WHERE clazz.name = #{className}
+        SELECT clazz.id FROM clazz WHERE clazz.name = #{className} AND is_deleted = 0
     </select>
     <select id="getClazz" resultType="com.sipc.clockin.pojo.model.result.GetClazzResult">
         SELECT clazz.id AS clazz_id,clazz.name AS clazz_name
@@ -18,11 +18,12 @@
             <foreach collection="clazzIds" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
+            AND is_deleted = 0
     </select>
     <select id="getClazzIds" resultType="java.lang.String">
         SELECT user.class_ids FROM user WHERE user.work_id = #{workId}
     </select>
     <select id="getAllClazz" resultType="com.sipc.clockin.pojo.model.result.GetClazzResult">
-        SELECT id AS clazz_id,name AS clazz_name FROM clazz
+        SELECT id AS clazz_id,name AS clazz_name FROM clazz WHERE is_deleted = 0
     </select>
 </mapper>
