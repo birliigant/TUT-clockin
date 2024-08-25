@@ -78,7 +78,7 @@ public class TeacherController {
     }
     @GetMapping("/class/get")
     @Role(identities = {RoleEnum.MANAGER})
-    private CommonResult<List<GetClazzResult>> getClazz(){
-        return teacherService.getClazz();
+    private CommonResult<List<GetClazzResult>> getClazz(@RequestParam(value = "need_all",required = false) Boolean needAll){
+        return teacherService.getClazz(needAll);
     }
 }
