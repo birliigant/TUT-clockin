@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class TokenResult {
     public String token;
+    private String role;
 }

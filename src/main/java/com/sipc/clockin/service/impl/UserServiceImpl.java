@@ -2,11 +2,11 @@ package com.sipc.clockin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.sipc.clockin.enums.RedisFlags;
 import com.sipc.clockin.enums.RoleEnum;
 import com.sipc.clockin.mapper.UserMapper;
 import com.sipc.clockin.pojo.domain.PO.User;
 import com.sipc.clockin.pojo.model.CommonResult;
-import com.sipc.clockin.enums.RedisFlags;
 import com.sipc.clockin.pojo.model.request.EmailRequest;
 import com.sipc.clockin.pojo.model.request.LoginRequest;
 import com.sipc.clockin.pojo.model.request.RegisterRequest;
@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
         redisTemplate.opsForValue().set(RedisFlags.TOKEN_PREFIX+user.getEmail(), token, 30, TimeUnit.DAYS);
         TokenResult result = new TokenResult();
         result.setToken(JwtUtils.sign(user));
+        result.setRole(user.getRole());
         return CommonResult.success("登录成功",result);
     }
 
@@ -73,18 +74,22 @@ public class UserServiceImpl implements UserService {
             // 如果学号不以 20 开头，则为辅导员
             if (! user.getWorkId().toString().startsWith("20")){
                 user.setRole(RoleEnum.MANAGER);
+            }else {
+                user.setRole(RoleEnum.ORDINARY);
             }
             user.setPassword(MD5Utils.encrypt(request.getPassword()));
             if (userMapper.insert(user) == 0){
                 return CommonResult.fail("注册失败");
             }
             redisTemplate.delete(RedisFlags.VERIFY_PREFIX+email);
+            TokenResult result = new TokenResult();
+            //选择记住我则返回token,否则只返回身份
             if (request.getIsRemembered()){
-                TokenResult result = new TokenResult();
                 result.setToken(JwtUtils.sign(user));
-                return CommonResult.success("注册成功",result);
             }
-            return CommonResult.fail("注册失败");
+            result.setRole(user.getRole());
+            return CommonResult.success("注册成功",result);
+//            return CommonResult.fail("注册失败");
         } catch (DataAccessException e) {
             e.printStackTrace();
             return CommonResult.fail("注册失败，数据库操作异常");
