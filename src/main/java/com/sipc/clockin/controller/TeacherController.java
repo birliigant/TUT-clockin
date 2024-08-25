@@ -10,6 +10,7 @@ import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
+import com.sipc.clockin.pojo.model.result.GetClazzResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.RestResult;
 import com.sipc.clockin.service.TeacherService;
@@ -74,5 +75,10 @@ public class TeacherController {
     @Role(identities = {RoleEnum.MANAGER})
     private CommonResult<RestResult> getRestInfo(@RequestParam("clock_id") Integer clockId){
         return teacherService.getRestInfo(clockId);
+    }
+    @GetMapping("/class/get")
+    @Role(identities = {RoleEnum.MANAGER})
+    private CommonResult<List<GetClazzResult>> getClazz(){
+        return teacherService.getClazz();
     }
 }

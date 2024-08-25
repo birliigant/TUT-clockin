@@ -11,4 +11,14 @@
     <select id="selectIdByName" resultType="java.lang.Integer">
         SELECT clazz.id FROM clazz WHERE clazz.name = #{className}
     </select>
+    <select id="getClazz" resultType="com.sipc.clockin.pojo.model.result.GetClazzResult">
+        SELECT clazz.id AS clazz_id,clazz.name AS clazz_name,major.name AS major_name
+            FROM clazz LEFT JOIN major ON (clazz.major_id = major.id AND clazz.id IN
+        <foreach collection="clazzIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>)
+    </select>
+    <select id="getClazzIds" resultType="java.lang.String">
+        SELECT user.class_ids FROM user WHERE user.work_id = #{workId}
+    </select>
 </mapper>

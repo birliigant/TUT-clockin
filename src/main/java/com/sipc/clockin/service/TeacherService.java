@@ -8,6 +8,7 @@ import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
 import com.sipc.clockin.pojo.model.result.BlankResult;
+import com.sipc.clockin.pojo.model.result.GetClazzResult;
 import com.sipc.clockin.pojo.model.result.HomePageResult;
 import com.sipc.clockin.pojo.model.result.RestResult;
 
@@ -24,4 +25,5 @@ public interface TeacherService {
     CommonResult<HomePageResult> getTeacherHomePage(String className,String type);
     CommonResult<HomePageResult> getTeacherRecord(Integer classId, DateTime date,String type);
     CommonResult<RestResult> getRestInfo(Integer clockId);
+    CommonResult<List<GetClazzResult>> getClazz();
 }
