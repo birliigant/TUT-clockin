@@ -25,5 +25,5 @@ public interface TeacherService {
     CommonResult<HomePageResult> getTeacherHomePage(String className,String type);
     CommonResult<HomePageResult> getTeacherRecord(Integer classId, DateTime date,String type);
     CommonResult<RestResult> getRestInfo(Integer clockId);
-    CommonResult<List<GetClazzResult>> getClazz();
+    CommonResult<List<GetClazzResult>> getClazz(Boolean needAll);
 }

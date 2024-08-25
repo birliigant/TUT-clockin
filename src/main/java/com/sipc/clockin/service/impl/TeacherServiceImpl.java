@@ -244,13 +244,29 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public CommonResult<List<GetClazzResult>> getClazz() {
+    public CommonResult<List<GetClazzResult>> getClazz(Boolean needAll) {
+        if (needAll == null) needAll = false;
         Integer workId = TokenHandler.getTokenModelThreadLocal().getWorkId();
+        //获取负责班级
         String clazzIds = clazzMapper.getClazzIds(workId);
-        if (StringUtils.isEmpty(clazzIds)) return CommonResult.fail("未查询到负责班级信息");
-        List<Integer> list = DataParseUtils.parseJsonToList(clazzIds, Integer.class);
+        List<Integer> list = null;
+        if (!StringUtils.isEmpty(clazzIds))
+            list = DataParseUtils.parseJsonToList(clazzIds, Integer.class);
+        //需要全部班级
+        if (needAll){
+            List<GetClazzResult> allClazz = clazzMapper.getAllClazz();
+            //标记负责班级
+            for (GetClazzResult tem : allClazz){
+                Integer id = tem.getClazzId();
+                if (list != null && list.contains(id)) tem.setResponsible(true);
+                else tem.setResponsible(false);
+            }
+            return CommonResult.success(allClazz);
+        }
+        if (list == null) return CommonResult.fail("未查询到负责班级信息");
         List<GetClazzResult> clazz = clazzMapper.getClazz(list);
         if (clazz == null || clazz.isEmpty()) return CommonResult.fail("未查询到负责班级信息");
+        for (GetClazzResult tem : clazz) tem.setResponsible(true);
         return CommonResult.success(clazz);
     }
 }

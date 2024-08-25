@@ -1,5 +1,6 @@
 package com.sipc.clockin.pojo.model.result;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,6 @@ public class GetClazzResult {
     private Integer clazzId;
     @JsonProperty("class_name")
     private String clazzName;
-    @JsonProperty("major_name")
-    private String majorName;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private boolean isResponsible;
 }
