@@ -20,11 +20,9 @@ import com.sipc.clockin.pojo.model.TokenModel;
 import com.sipc.clockin.pojo.model.request.ClassRequest;
 import com.sipc.clockin.pojo.model.request.ManageRequest;
 import com.sipc.clockin.pojo.model.request.UpdateTeacherRequest;
-import com.sipc.clockin.pojo.model.result.BlankResult;
-import com.sipc.clockin.pojo.model.result.HomePageResult;
-import com.sipc.clockin.pojo.model.result.RestResult;
-import com.sipc.clockin.pojo.model.result.StudentClockDetail;
+import com.sipc.clockin.pojo.model.result.*;
 import com.sipc.clockin.service.TeacherService;
+import com.sipc.clockin.utils.DataParseUtils;
 import com.sipc.clockin.utils.DateTimeParseUtils;
 import com.sipc.clockin.utils.StringUtils;
 import lombok.AllArgsConstructor;
@@ -243,5 +241,16 @@ public class TeacherServiceImpl implements TeacherService {
         if(restInfo == null) return CommonResult.fail("未查询到该打卡信息");
         if(StringUtils.isEmpty(restInfo.getReason())) return  CommonResult.fail("未查询到当前打卡记录请假原因");
         return CommonResult.success(restInfo);
+    }
+
+    @Override
+    public CommonResult<List<GetClazzResult>> getClazz() {
+        Integer workId = TokenHandler.getTokenModelThreadLocal().getWorkId();
+        String clazzIds = clazzMapper.getClazzIds(workId);
+        if (StringUtils.isEmpty(clazzIds)) return CommonResult.fail("未查询到负责班级信息");
+        List<Integer> list = DataParseUtils.parseJsonToList(clazzIds, Integer.class);
+        List<GetClazzResult> clazz = clazzMapper.getClazz(list);
+        if (clazz == null || clazz.isEmpty()) return CommonResult.fail("未查询到负责班级信息");
+        return CommonResult.success(clazz);
     }
 }
